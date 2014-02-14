@@ -25,7 +25,7 @@ add_library(${PROJECT_NAME} src/nodelets/convert_metric.cpp
 )
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 
-add_executable(disp2depthNode src/disp2depthNode.cpp  src/DisparityToDepth.cpp)
+add_executable(disp2depthNode src/disp2depthNode.cpp)
 target_link_libraries(disp2depthNode ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 

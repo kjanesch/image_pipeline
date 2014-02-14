@@ -1,0 +1,8 @@
+<launch>
+	<node pkg="nodelet" type="nodelet" name="manager" output="screen" respawn="true" args="manager"/>
+	<!-- throttling -->
+	<node pkg="nodelet" type="nodelet" name="disp_to_depth" args="load  depth_image_proc/Depth manager">
+	<remap from="disparity" to="/stereo/disparity"/>
+	<remap from="/left/depth" to="/stereo/depth"/>
+	</node>
+</launch>
