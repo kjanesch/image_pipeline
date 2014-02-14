@@ -153,10 +153,10 @@ void RectifyNodelet::imageCb(const sensor_msgs::ImageConstPtr& image_msg,
   
   //model_.rectifyImage(image, rect, interpolation);// rectify image on cpu
   
-  //assert( PinholeCameraModel::initialized() );
-  //PinholeCameraModel::initRectificationMaps();
+  assert( PinholeCameraModel::initialized() );
+  PinholeCameraModel::initRectificationMaps();
   
-  //cv::gpu::remap(gpuImage, gpuImRect, model_.cache_->reduced_map1, model_.cache_->reduced_map2, interpolation);/*in, out, matx, maty, interpolation*/
+  cv::gpu::remap(gpuImage, gpuImRect, model_.cache_->reduced_map1, model_.cache_->reduced_map2, interpolation);/*in, out, matx, maty, interpolation*/
   gpuImRect.download(rect);
   
   // Allocate new rectified image message
