@@ -134,6 +134,12 @@ void RectifyNodelet::imageCb(const sensor_msgs::ImageConstPtr& image_msg,
   // Create cv::Mat views onto both buffers
   const cv::Mat image = cv_bridge::toCvShare(image_msg)->image;
   cv::Mat rect;
+  
+  // Convert cvMat to GpuMat    
+  const gpu::GpuMat gpuImage;
+  gpu::GpuMat gpuImRect = gpu::GpuMat(image.rows, image.cols, CV_8UC1);// may not need to explicitly declare image size
+  gpuImage.upload(image);
+  
 
   // Rectify and publish
   int interpolation;
@@ -141,8 +147,12 @@ void RectifyNodelet::imageCb(const sensor_msgs::ImageConstPtr& image_msg,
     boost::lock_guard<boost::recursive_mutex> lock(config_mutex_);
     interpolation = config_.interpolation;
   }
-  model_.rectifyImage(image, rect, interpolation);
-
+  //////////////////////////////////////////////// THIS IS WHERE GPU STUFF NEEDS TO HAPPEN
+  
+  //model_.rectifyImage(image, rect, interpolation);// rectify image on cpu
+  gpu::remap(gpuImage,gpuImRect,interpolation);
+  gpuImRect.download(rect);
+  
   // Allocate new rectified image message
   sensor_msgs::ImagePtr rect_msg = cv_bridge::CvImage(image_msg->header, image_msg->encoding, rect).toImageMsg();
   pub_rect_.publish(rect_msg);
